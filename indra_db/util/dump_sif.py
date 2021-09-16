@@ -446,6 +446,9 @@ def make_dataframe(reconvert, db_content, res_pos_dict, src_count_dict,
                     f.write('%s,%s\n' % kn)
         df = pd.DataFrame.from_dict(rows)
 
+        if normalize_names:
+            normalize_sif_names(sif_df=df)
+
         if pkl_filename:
             if isinstance(pkl_filename, S3Path):
                 upload_pickle_to_s3(obj=df, s3_path=pkl_filename)
@@ -462,8 +465,10 @@ def make_dataframe(reconvert, db_content, res_pos_dict, src_count_dict,
             else:
                 with open(pkl_filename, 'rb') as f:
                     df = pickle.load(f)
-    if normalize_names:
-        normalize_sif_names(sif_df=df)
+
+        if normalize_names:
+            normalize_sif_names(sif_df=df)
+
     return df
 
 
