@@ -216,8 +216,11 @@ def normalize_sif_names(sif_df: DataFrame):
     sif_df :
         The sif dataframe
     """
+    from protmapper import __version__ as pm_vers
     from indra.ontology.bio import bio_ontology
     bio_ontology.initialize()
+    logger.info(f'Normalizing names with protmapper version {pm_vers} and '
+                f'bio ontology version {bio_ontology.version}')
     logger.info('Getting ns, id, name tuples')
 
     # Get the set of grounded entities
