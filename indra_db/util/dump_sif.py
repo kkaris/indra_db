@@ -450,6 +450,7 @@ def make_dataframe(reconvert, db_content, res_pos_dict, src_count_dict,
             normalize_sif_names(sif_df=df)
 
         if pkl_filename:
+            logger.info(f'Saving pickle of dataframe to {pkl_filename}')
             if isinstance(pkl_filename, S3Path):
                 upload_pickle_to_s3(obj=df, s3_path=pkl_filename)
             else:
@@ -460,6 +461,7 @@ def make_dataframe(reconvert, db_content, res_pos_dict, src_count_dict,
             logger.error('Have to provide pickle file if not reconverting')
             raise FileExistsError
         else:
+            logger.info(f'Reading Sif pickle from {pkl_filename}')
             if isinstance(pkl_filename, S3Path):
                 df = load_pickle_from_s3(pkl_filename)
             else:
