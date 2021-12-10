@@ -281,10 +281,16 @@ class Start(Dumper):
         self.manifest = []
 
     def _mark_start(self, s3):
+        from indra.ontology.bio import bio_ontology
+        bio_vers = bio_ontology.version
+        import protmapper
+        protmapper_vers = protmapper.__version__
         s3.put_object(
             Body=json.dumps(
                 {'datetime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                 'date_stamp': self.date_stamp}
+                 'date_stamp': self.date_stamp,
+                 'bio_ontology_version': bio_vers,
+                 'protmapper_version': protmapper_vers},
             ),
             **self.get_s3_path().kw()
         )
