@@ -1,9 +1,9 @@
-from nose.plugins.attrib import attr
+import pytest
 
 from indra.statements.statements import Agent, Phosphorylation, Complex, \
     Evidence
 
-from indra_db.managers.knowledgebase_manager import *
+from indra_db.cli.knowledgebase import *
 from indra_db.util import insert_db_stmts
 from indra_db.tests.util import get_temp_db
 
@@ -23,58 +23,64 @@ def _check_kbm(Kb, *args, **kwargs):
     db.session.close()
 
 
-@attr("nonpublic")
+@pytest.mark.nonpublic
 def test_tas():
     _check_kbm(TasManager)
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_cbn():
     s3_url = 'https://s3.amazonaws.com/bigmech/travis/Hox-2.0-Hs.jgf.zip'
     _check_kbm(CBNManager, archive_url=s3_url)
 
 
-@attr('nonpublic', 'slow')
+@pytest.mark.nonpublic
+@pytest.mark.slow
 def test_hprd():
     _check_kbm(HPRDManager)
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_signor():
     _check_kbm(SignorManager)
 
 
-@attr('nonpublic', 'slow')
+@pytest.mark.nonpublic
+@pytest.mark.slow
 def test_biogrid():
     _check_kbm(BiogridManager)
 
 
-@attr('nonpublic', 'slow')
+@pytest.mark.nonpublic
+@pytest.mark.slow
 def test_bel_lc():
     _check_kbm(BelLcManager)
 
 
-@attr('nonpublic', 'slow')
+@pytest.mark.nonpublic
+@pytest.mark.slow
 def test_pathway_commons():
     _check_kbm(PathwayCommonsManager)
 
 
-@attr('nonpublic', 'slow')
+@pytest.mark.nonpublic
+@pytest.mark.slow
 def test_rlimsp():
     _check_kbm(RlimspManager)
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_trrust():
     _check_kbm(TrrustManager)
 
 
-@attr('nonpublic', 'slow')
+@pytest.mark.nonpublic
+@pytest.mark.slow
 def test_phosphosite():
     _check_kbm(PhosphositeManager)
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_simple_db_insert():
     db = get_temp_db()
     db._clear(force=True)

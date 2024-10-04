@@ -1,5 +1,5 @@
 from unittest import skip
-from nose.plugins.attrib import attr
+import pytest
 
 from indra.util import zip_string
 
@@ -10,7 +10,7 @@ from indra_db.util.content_scripts import (get_stmts_with_agent_text_like,
                                            TextContentSessionHandler)
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_get_stmts_with_agent_text_like():
     db = _get_prepped_db()
     agent_stmts0 = get_stmts_with_agent_text_like('__', filter_genes=True,
@@ -34,7 +34,7 @@ def test_get_stmts_with_agent_text_like():
     assert agent_stmts2['NPs'] == [1]
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_get_stmts_with_agent_text_in():
     db = _get_prepped_db()
     agent_stmts0 = get_stmts_with_agent_text_in(['damage', 'impact', 'health'],
@@ -51,7 +51,7 @@ def test_get_stmts_with_agent_text_in():
 
 
 @skip('test broken. db does not contain materialized view')
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_get_text_content_from_stmt_ids():
     fulltext0 = ('We investigate properties of the estrogen receptor (ER).'
                  ' Our investigation made no new findings about ER, leading to'
@@ -77,7 +77,7 @@ def test_get_text_content_from_stmt_ids():
     assert text_dict['2/pubmed/abstract'] == abstract2
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_get_text_content_from_text_refs():
     fulltext0 = ('We investigate properties of the estrogen receptor (ER).'
                  ' Our investigation made no new findings about ER, leading to'

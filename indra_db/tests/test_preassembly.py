@@ -5,6 +5,7 @@ import random
 import logging
 from datetime import datetime
 from time import sleep
+import pytest
 
 gm_logger = logging.getLogger('grounding_mapper')
 gm_logger.setLevel(logging.WARNING)
@@ -598,7 +599,7 @@ def test_distillation_on_curated_set():
         (len(filtered_set), len(filtered_id_set))
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_db_lazy_insert():
     rldb = RefLoadedDb()
 
@@ -624,7 +625,7 @@ def test_db_lazy_insert():
     return
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_lazy_copier_unique_constraints():
     db = get_temp_db(clear=True)
 
@@ -657,7 +658,7 @@ def test_lazy_copier_unique_constraints():
     return
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_lazy_copier_update():
     rldb = RefLoadedDb()
 
@@ -669,7 +670,7 @@ def test_lazy_copier_update():
     rldb.check_result()
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_db_preassembly():
     db = _get_db_no_pa_stmts()
 
@@ -725,7 +726,7 @@ def test_db_preassembly():
     return
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_db_preassembly_update():
     db = _get_db_with_pa_stmts()
 

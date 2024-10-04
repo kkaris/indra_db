@@ -1,16 +1,16 @@
 from os import remove, path
 
+import pytest
 from sqlalchemy.exc import IntegrityError
 
 from nose import SkipTest
 from nose.tools import assert_equal
-from nose.plugins.attrib import attr
 from indra.util.nested_dict import NestedDict
 
 from indra_db.client import get_content_by_refs
-from indra_db.managers.reading_manager import BulkLocalReadingManager
+from indra_db.cli.reading import BulkLocalReadingManager
 
-from indra_db.managers.content_manager import Pubmed, PmcOA, Manuscripts,\
+from indra_db.cli.content import Pubmed, PmcOA, Manuscripts,\
     Elsevier
 from indra_db.tests.util import get_temp_db, get_test_ftp_url,\
     assert_contents_equal
@@ -52,7 +52,7 @@ def get_test_db_with_ftp_content():
 # =============================================================================
 # The following are tests for the database manager itself.
 # =============================================================================
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_create_tables():
     "Test the create_tables feature"
     db = get_temp_db()
@@ -61,7 +61,7 @@ def test_create_tables():
     assert_contents_equal(db.get_active_tables(), db.get_tables())
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_insert_and_query_pmid():
     "Test that we can add a text_ref and get the text_ref back."
     db = get_temp_db()
@@ -73,7 +73,7 @@ def test_insert_and_query_pmid():
     assert_equal(entries[0].id, text_ref_id, "Got back wrong text_ref_id.")
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_uniqueness_text_ref_doi_pmid():
     "Test uniqueness enforcement behavior for text_ref insertion."
     db = get_temp_db()
@@ -89,7 +89,7 @@ def test_uniqueness_text_ref_doi_pmid():
     assert False, "Uniqueness was not enforced."
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_uniqueness_text_ref_url():
     "Test whether the uniqueness imposed on the url of text_refs is enforced."
     db = get_temp_db()
@@ -102,7 +102,7 @@ def test_uniqueness_text_ref_url():
     assert False, "Uniqueness was not enforced."
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_get_abstracts():
     "Test the ability to get a list of abstracts."
     db = get_temp_db()
@@ -174,7 +174,8 @@ def test_get_abstracts():
 # =============================================================================
 
 
-@attr('nonpublic', 'slow')
+@pytest.mark.nonpublic
+@pytest.mark.slow
 def test_full_upload():
     "Test whether we can perform a targeted upload to a test db."
     # This uses a specially curated sample directory designed to access most
@@ -238,7 +239,7 @@ def test_full_upload():
     m.load_files(db, 'baseline', carefully=True)
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_multiple_pmids():
     "Test that pre-existing pmids are correctly handled."
     db = get_temp_db()
@@ -251,7 +252,7 @@ def test_multiple_pmids():
     return
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_multible_pmc_oa_content():
     "Test to make sure repeated content is handled correctly."
     db = get_temp_db()
@@ -264,7 +265,7 @@ def test_multible_pmc_oa_content():
     return
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_multiple_text_ref_pmc_oa():
     "Test whether a duplicate text ref in pmc oa is handled correctly."
     db = get_temp_db()
@@ -281,7 +282,7 @@ def test_multiple_text_ref_pmc_oa():
     return
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_id_handling_pmc_oa():
     "Test every conceivable combination pmid/pmcid presence."
     db = get_temp_db(clear=True)
@@ -364,7 +365,7 @@ def test_id_handling_pmc_oa():
     return
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_medline_ref_checks():
     "Test the text ref checks used by medline."
     db = get_temp_db(clear=True)
@@ -463,7 +464,8 @@ def test_medline_ref_checks():
     return
 
 
-@attr('nonpublic', 'known_failing')
+@pytest.mark.nonpublic
+@pytest.mark.known_failing
 def test_elsevier_upload():
     "Test that we can upload elsevier content."
     db = get_test_db_with_ftp_content()
@@ -484,7 +486,8 @@ def test_elsevier_upload():
     assert num_elsevier > 0, "Got no elsevier content."
 
 
-@attr('nonpublic', 'slow')
+@pytest.mark.nonpublic
+@pytest.mark.slow
 def test_sparser_initial_reading():
     "Test the initial reading of of sparser content"
     db = get_test_db_with_ftp_content()
@@ -521,7 +524,8 @@ def test_nested_dict():
                            str((('B', 'C'), d['B']['C']))])
 
 
-@attr('nonpublic', 'slow')
+@pytest.mark.nonpublic
+@pytest.mark.slow
 def test_ftp_service():
     "Test the NIH FTP access client on the content managers."
     cases = [

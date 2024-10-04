@@ -7,7 +7,7 @@ from os import path, chdir
 from subprocess import check_call
 
 import boto3
-from nose.plugins.attrib import attr
+import pytest
 
 from indra.util import zip_string
 from indra_reading.readers import SparserReader
@@ -43,7 +43,7 @@ def get_readers(*names, **kwargs):
             if (not names or reader_class.name in names)]
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_get_content():
     "Test that content queries are correctly formed."
     db = get_db_with_pubmed_content()
@@ -63,7 +63,7 @@ def test_get_content():
             "Expected no results when passing no ids."
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_get_reader_children():
     "Test method for getting reader objects."
     readers = get_readers()
@@ -71,7 +71,8 @@ def test_get_reader_children():
         "Expected only 3 readers, but got %s." % str(readers)
 
 
-@attr('slow', 'nonpublic')
+@pytest.mark.slow
+@pytest.mark.nonpublic
 def test_reading_content_insert():
     "Test the content primary through-put of make_db_readings."
     db = get_db_with_pubmed_content()
@@ -119,7 +120,7 @@ def test_reading_content_insert():
     assert len(db.select_all(db.RawAgents)), "No agents added."
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_read_db():
     "Test the low level make_db_readings functionality with various settings."
     # Prep the inputs.
@@ -169,7 +170,8 @@ def test_read_db():
          "existed: expected %d, but got %d." % (N1, N_old))
 
 
-@attr('slow', 'nonpublic')
+@pytest.mark.slow
+@pytest.mark.nonpublic
 def test_produce_readings():
     "Comprehensive test of the high level production of readings."
     # Prep the inputs.
@@ -238,7 +240,7 @@ def test_produce_readings():
     assert all([rd.reading_id is not None for rd in new])
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_stmt_mode_unread():
     "Test whether we can only create statements from unread content."
     # Prep the inputs.
@@ -263,7 +265,7 @@ def test_stmt_mode_unread():
         "There were overlapping statements."
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_sparser_parallel():
     "Test running sparser in parallel."
     db = get_db_with_pubmed_content()
@@ -277,7 +279,7 @@ def test_sparser_parallel():
         "Expected to get %d results, but got %d." % (N_exp, N_res)
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_sparser_parallel_one_batch():
     "Test that sparser runs with multiple procs with batches of 1."
     db = get_db_with_pubmed_content()
@@ -291,7 +293,8 @@ def test_sparser_parallel_one_batch():
         "Expected to get %d results, but got %d." % (N_exp, N_res)
 
 
-@attr('slow', 'nonpublic')
+@pytest.mark.slow
+@pytest.mark.nonpublic
 def test_multi_batch_run():
     "Test that reading works properly with multiple batches run."
     db = get_db_with_pubmed_content()
@@ -310,7 +313,8 @@ def test_multi_batch_run():
         "Expected %d readings, only found %d." % (num_expected, num_readings)
 
 
-@attr('slow', 'nonpublic')
+@pytest.mark.slow
+@pytest.mark.nonpublic
 def test_multiproc_statements():
     "Test the multiprocessing creation of statements."
     db = get_db_with_pubmed_content()
@@ -323,14 +327,14 @@ def test_multiproc_statements():
     assert len(stmts)
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_db_reading_help():
     chdir(path.expanduser('~'))
     check_call(['python', '-m', 'indra_db.reading.read_db_aws',
                 '--help'])
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_normal_db_reading_call():
     s3 = boto3.client('s3')
     chdir(path.expanduser('~'))

@@ -1,4 +1,4 @@
-from nose.plugins.attrib import attr
+import pytest
 
 from indra.belief import BeliefEngine
 from indra_db.belief import MockStatement, MockEvidence, populate_support, \
@@ -70,7 +70,7 @@ def test_belief_calc_up_to_hierarchy():
     assert all_deltas_correct, deltas_dict
 
 
-@attr('nonpublic')
+@pytest.mark.nonpublic
 def test_mock_stmt_load_and_belief_calc():
     db = get_prepped_db(1000, with_pa=True)
     stmts = load_mock_statements(db)
