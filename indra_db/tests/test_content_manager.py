@@ -1,4 +1,4 @@
-from os import remove, path
+from os import remove
 
 import pytest
 from sqlalchemy.exc import IntegrityError
