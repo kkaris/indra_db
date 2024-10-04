@@ -7,8 +7,8 @@ from indra.statements import Phosphorylation, Agent, Activation, Inhibition, \
     Complex, Evidence, Conversion
 from indra_db import config
 from indra_db.databases import reader_versions
-from indra_db.managers import dump_manager as dm
-from indra_db.managers.dump_manager import dump
+from indra_db.cli import dump as dm
+from indra_db.cli.dump import dump
 from indra_db.preassembly.preassemble_db import DbPreassembler
 from indra_db.tests.util import get_temp_db, get_temp_ro, simple_insert_stmts
 from indra_db.util import S3Path

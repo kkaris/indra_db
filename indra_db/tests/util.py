@@ -68,7 +68,7 @@ def get_test_ftp_url():
 
 def get_db_with_pubmed_content():
     "Populate the database with sample content from pubmed."
-    from indra_db.managers.content_manager import Pubmed
+    from indra_db.cli.content import Pubmed
     db = get_temp_db(clear=True)
     Pubmed(ftp_url=get_test_ftp_url(), local=True).populate(db)
     return db
@@ -76,7 +76,7 @@ def get_db_with_pubmed_content():
 
 def get_db_with_ftp_content():
     "Populate database with content from all the ftp services"
-    from indra_db.managers.content_manager import PmcOA, Manuscripts
+    from indra_db.cli.content import PmcOA, Manuscripts
     db = get_db_with_pubmed_content()
     PmcOA(ftp_url=get_test_ftp_url(), local=True).populate(db)
     Manuscripts(ftp_url=get_test_ftp_url(), local=True).populate(db)

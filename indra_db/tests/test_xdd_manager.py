@@ -3,7 +3,7 @@ import boto3
 import random
 
 from indra_db.tests.util import get_temp_db
-from indra_db.managers.xdd_manager import XddManager
+from indra_db.cli.xdd import XddManager
 
 
 def test_dump():
