@@ -3,8 +3,6 @@ from os import remove, path
 import pytest
 from sqlalchemy.exc import IntegrityError
 
-from nose import SkipTest
-from nose.tools import assert_equal
 from indra.util.nested_dict import NestedDict
 
 from indra_db.client import get_content_by_refs
@@ -18,7 +16,7 @@ from indra_db.tests.util import get_temp_db, get_test_ftp_url,\
 try:
     get_temp_db()
 except Exception as e:
-    raise SkipTest("Not able to start up any of the available test hosts:\n"
+    raise RuntimeError("Not able to start up any of the available test hosts:\n"
                    + str(e))
 
 
@@ -68,9 +66,9 @@ def test_insert_and_query_pmid():
     pmid = '1234'
     text_ref_id = db.insert('text_ref', pmid=pmid)
     entries = db.select_all('text_ref', db.TextRef.pmid == pmid)
-    assert_equal(len(entries), 1, "One item inserted, multiple entries found.")
-    assert_equal(entries[0].pmid, pmid)
-    assert_equal(entries[0].id, text_ref_id, "Got back wrong text_ref_id.")
+    assert len(entries) == 1, "One item inserted, multiple entries found."
+    assert entries[0].pmid == pmid
+    assert entries[0].id == text_ref_id, "Got back wrong text_ref_id."
 
 
 @pytest.mark.nonpublic
