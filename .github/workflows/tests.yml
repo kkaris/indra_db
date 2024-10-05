@@ -46,17 +46,15 @@ jobs:
         SUPERSECRETSECREST: ${{ secrets.SUPERSECRETSECRET }}
       run: |
         # Set nose attributes based on the context in which we are running
-        export NOSEATTR="!notravis,!slow,!cron";
-        export NOSEATTR=$(if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then echo $NOSEATTR,!nonpublic; else echo $NOSEATTR; fi)
-        echo $NOSEATTR
+        export PYTESTMARKS="(not nogha) and (not slow) and (not cron)";
+        export PYTESTMARKS=$(if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then echo $PYTESTMARKS,!nonpublic; else echo $PYTESTMARKS; fi)
+        echo $PYTESTMARKS
         # These are files that are ignored so that doctests don't fail
         export NOSE_IGNORE_FILES="find_full_text_sentence.py";
 
-        echo $NOSEATTR
+        echo $PYTESTMARKS
         #- cd $TRAVIS_BUILD_DIR
         # Now run all INDRA DB REST API tests
-        cd rest_api
-        nosetests -v -a $NOSEATTR --with-coverage --cover-inclusive --cover-package=indra --with-doctest --with-doctest-ignore-unicode --with-timer --timer-top-n 10 --processes=0
     #- name: Run all other tests
     #  env:
     #    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -75,4 +73,6 @@ jobs:
     #    # Now run all INDRA DB REST API tests
     #    cd indra_db
     #    nosetests -v -a $NOSEATTR --with-coverage --cover-inclusive --cover-package=indra --with-doctest --with-doctest-ignore-unicode --with-timer --timer-top-n 10 --processes=0
+        cd indra_db_service
+        pytest -v -m "$PYTESTMARKS" --doctest-modules --durations=10 --continue-on-collection-errors test_api.py
         
