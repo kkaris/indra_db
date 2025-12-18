@@ -324,8 +324,10 @@ class StatementApiCall(ApiCall):
         self.web_query['paper_ids'] = \
             {i for i in self._pop('paper_ids', '').split(',') if i}
         self.filter_ev = self._pop('filter_ev', True, bool)
-        logger.info(f"Evidence {'will' if self.filter_ev else 'will not'} be "
-                    f"filtered.")
+        if self.filter_ev:
+            logger.info("Evidence will be filtered.")
+        else:
+            logger.info("Evidence will not be filtered.")
         self.agent_dict = {}
         self.agent_set = set()
         return
