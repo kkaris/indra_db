@@ -1383,8 +1383,24 @@ class HasOnlySource(SourceQuery):
                 return ro.RawStmtSrc.src == self.only_source
         else:
             def get_clause(ro):
-                return ro.RawStmtSrc.src != self.only_source
-        return EvidenceFilter.from_filter('raw_stmt_src', get_clause)
+                # Fixme: This is a temporary fix while the readonly database
+                #  pipeline is being fixed to build the RawStmtSrc table
+                #  correctly.
+                # Include evidence where src != only_source OR src IS NULL
+                # (NULL means sources that don't have RawStmtSrc entries)
+                # Corresponds to:
+                # raw_stmt_src.src != 'your_source_value' OR raw_stmt_src.src IS NULL
+                # or
+                # readonly.raw_stmt_src.src != 'your_source_value' OR readonly.raw_stmt_src.src IS NULL
+
+                # Original:
+                # return ro.RawStmtSrc.src != self.only_source
+                # Temporary fix:
+                return or_(
+                    ro.RawStmtSrc.src != self.only_source,
+                    ro.RawStmtSrc.src.is_(None),
+                )
+        return EvidenceFilter.from_filter("raw_stmt_src", get_clause)
 
     def _apply_filter(self, ro, query, invert=False):
         inverted = self._inverted ^ invert
@@ -2982,8 +2998,33 @@ class _QueryEvidenceFilter:
         self.get_clause = get_clause
 
     def join_table(self, ro, query, tables_joined=None):
-        if self.table_name == 'raw_stmt_src':
-            ret = query.filter(ro.RawStmtSrc.sid == ro.FastRawPaLink.id)
+        print("DEBUG: called _QueryEvidenceFilter.join_table")
+        print(f"DEBUG: SQL before join:\n{str(query)}")
+        # Fixme: This is a temporary fix to get the evidence filtering working
+        #  while the readonly database pipeline is being fixed to build the
+        #  RawStmtSrc table correctly.
+        #
+        # The temporary fix query is equivalent to:
+        # SELECT ...
+        # FROM readonly.fast_raw_pa_link
+        # LEFT JOIN readonly.raw_stmt_src
+        #     ON raw_stmt_src.sid = fast_raw_pa_link.id
+        # WHERE ...
+        #
+        # while the original query is equivalent to:
+        # SELECT ...
+        # FROM readonly.fast_raw_pa_link, readonly.raw_stmt_src
+        # WHERE raw_stmt_src.sid = fast_raw_pa_link.id AND ...
+        # which doesn't keep rows in fast_raw_pa_link that have no matching
+        # rows in raw_stmt_src (due to the table, incorrectly, missing rows).
+        if self.table_name == "raw_stmt_src":
+            # Original:
+            # ret = query.filter(ro.RawStmtSrc.sid == ro.FastRawPaLink.id)
+            # Temporary fix:
+            ret = query.outerjoin(
+                ro.RawStmtSrc,
+                ro.RawStmtSrc.sid == ro.FastRawPaLink.id
+            )
         elif self.table_name == 'raw_stmt_mesh_terms':
             ret = query.outerjoin(
                 ro.RawStmtMeshTerms,
