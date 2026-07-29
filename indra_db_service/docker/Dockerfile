@@ -70,7 +70,7 @@ RUN mkdir /app
 WORKDIR /app
 
 # Copy startup script that dynamically sets GILDA_TERMS based on installed version
-COPY docker_startup.sh /app/docker_startup.sh
+COPY indra_db_service/docker/docker_startup.sh /app/docker_startup.sh
 RUN chmod +x /app/docker_startup.sh
 
 ENTRYPOINT ["/app/docker_startup.sh"]
